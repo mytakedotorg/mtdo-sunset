@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { parseMinute, formatDate } from "../lib/minutes";
+
+const entries = await getCollection("minutes");
+const minutes = entries
+  .map((e) => parseMinute(e))
+  .sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
+---
+
+<Base
+  title="MyTake.org — Sunset"
+  description="MyTake.org is shutting down. Archive of board minutes from the 501(c)(3) non-profit."
+>
+  <h1>MyTake.org is shutting down.</h1>
+  <p class="lede">
+    Our website is offline. The 501(c)(3) corporation is winding down over the
+    coming year. This page preserves the board minutes for the public record.
+  </p>
+
+  <div class="banner">
+    <strong>Status:</strong> wind-down in progress. Final dissolution expected
+    around mid-2027.
+  </div>
+
+  <h2>Board minutes</h2>
+  <ul class="minutes">
+    {
+      minutes.map((m) => (
+        <li>
+          <a href={`/minutes/${m.slug}/`}>{m.title}</a>
+          <time datetime={m.date?.toISOString()}>{formatDate(m.date)}</time>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

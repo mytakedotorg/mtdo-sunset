@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { parseMinute } from "../../lib/minutes";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("minutes");
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const meta = parseMinute(entry);
+---
+
+<Base title={`${meta.title} — MyTake.org`}>
+  <a href="/" class="back">← All minutes</a>
+  <article>
+    <Content />
+  </article>
+</Base>
